@@ -108,16 +108,16 @@ struct etharp_entry {
   struct etharp_q_entry *q;
 #else /* ARP_QUEUEING */
   /** Pointer to a single pending outgoing packet on this ARP entry. */
-  struct pbuf *q;
+  struct pbuf *q;         //缓冲队列,当pending时，往目标IP发送的数据将链接在这里
 #endif /* ARP_QUEUEING */
-  ip_addr_t ipaddr;
+  ip_addr_t ipaddr;       //ip address
   struct netif *netif;
-  struct eth_addr ethaddr;
+  struct eth_addr ethaddr;//mac address
   u8_t state;
   u8_t ctime;
 };
 
-static struct etharp_entry arp_table[ARP_TABLE_SIZE];
+static struct etharp_entry arp_table[ARP_TABLE_SIZE];//arp缓存表
 
 #if !LWIP_NETIF_HWADDRHINT
 static u8_t etharp_cached_entry;

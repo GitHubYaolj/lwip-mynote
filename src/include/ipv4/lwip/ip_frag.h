@@ -54,7 +54,7 @@ extern "C" {
 struct ip_reassdata {
   struct ip_reassdata *next;
   struct pbuf *p;
-  struct ip_hdr iphdr;
+  struct ip_hdr iphdr;//数据报的IP报头，分片的IP包含有相同的IP报头
   u16_t datagram_len;
   u8_t flags;
   u8_t timer;

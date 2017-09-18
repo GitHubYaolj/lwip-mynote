@@ -493,7 +493,7 @@ ip_input(struct pbuf *p, struct netif *inp)
     /* non-broadcast packet? */
     if (!ip_addr_isbroadcast(&current_iphdr_dest, inp)) {
       /* try to forward IP packet on (other) interfaces */
-      ip_forward(p, iphdr, inp);
+      ip_forward(p, iphdr, inp);//转发
     } else
 #endif /* IP_FORWARD */
     {
@@ -511,7 +511,7 @@ ip_input(struct pbuf *p, struct netif *inp)
     /* reassemble the packet*/
     p = ip_reass(p);
     /* packet not fully reassembled yet? */
-    if (p == NULL) {
+    if (p == NULL) {//reassembly is incomplete
       return ERR_OK;
     }
     iphdr = (struct ip_hdr *)p->payload;
@@ -555,7 +555,7 @@ ip_input(struct pbuf *p, struct netif *inp)
 
 #if LWIP_RAW
   /* raw input did not eat the packet? */
-  if (raw_input(p, inp) == 0)
+  if (raw_input(p, inp) == 0)//如果是分片包且不是最后一片，返回1；否则返回0
 #endif /* LWIP_RAW */
   {
     switch (IPH_PROTO(iphdr)) {

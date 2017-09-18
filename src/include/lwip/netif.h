@@ -148,7 +148,7 @@ struct netif {
   /** This function is called by the IP module when it wants
    *  to send a packet on the interface. This function typically
    *  first resolves the hardware address, then sends the packet. */
-  netif_output_fn output;
+  netif_output_fn output;  //output的实现会调用linkoutput
   /** This function is called by the ARP module when it wants
    *  to send a packet on the interface. This function outputs
    *  the pbuf as-is on the link medium. */

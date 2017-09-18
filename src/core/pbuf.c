@@ -236,7 +236,7 @@ pbuf_alloc(pbuf_layer layer, u16_t length, pbuf_type type)
   switch (type) {
   case PBUF_POOL:
     /* allocate head of pbuf chain into p */
-    p = (struct pbuf *)memp_malloc(MEMP_PBUF_POOL);
+    p = (struct pbuf *)memp_malloc(MEMP_PBUF_POOL);//分配空间大小#define PBUF_POOL_BUFSIZE  LWIP_MEM_ALIGN_SIZE(TCP_MSS+40+PBUF_LINK_HLEN)
     LWIP_DEBUGF(PBUF_DEBUG | LWIP_DBG_TRACE, ("pbuf_alloc: allocated pbuf %p\n", (void *)p));
     if (p == NULL) {
       PBUF_POOL_IS_EMPTY();

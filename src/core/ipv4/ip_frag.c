@@ -530,7 +530,7 @@ ip_reass(struct pbuf *p)
     ipr_prev = ipr;
   }
 
-  if (ipr == NULL) {
+  if (ipr == NULL) {//第一个到来的分片
   /* Enqueue a new datagram into the datagram queue */
     ipr = ip_reass_enqueue_new_datagram(fraghdr, clen);
     /* Bail if unable to enqueue */
@@ -555,7 +555,7 @@ ip_reass(struct pbuf *p)
    * to an existing one */
 
   /* check for 'no more fragments', and update queue entry*/
-  if ((IPH_OFFSET(fraghdr) & PP_NTOHS(IP_MF)) == 0) {
+  if ((IPH_OFFSET(fraghdr) & PP_NTOHS(IP_MF)) == 0) {//接收到最后一个分片包
     ipr->flags |= IP_REASS_FLAG_LASTFRAG;
     ipr->datagram_len = offset + len;
     LWIP_DEBUGF(IP_REASS_DEBUG,
