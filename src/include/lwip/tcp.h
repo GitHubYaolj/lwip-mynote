@@ -190,44 +190,44 @@ struct tcp_pcb {
   /* Timers */
   u8_t polltmr, pollinterval;
   u8_t last_timer;
-  u32_t tmr;
+  u32_t tmr;  //记录PCB创建时的时刻
 
   /* receiver variables */
-  u32_t rcv_nxt;   /* next seqno expected */
-  u16_t rcv_wnd;   /* receiver window available */
-  u16_t rcv_ann_wnd; /* receiver window to announce */
+  u32_t rcv_nxt;   /* next seqno expected */  //ACK的序号
+  u16_t rcv_wnd;   /* receiver window available */  //接收窗口
+  u16_t rcv_ann_wnd; /* receiver window to announce */  //通告窗口
   u32_t rcv_ann_right_edge; /* announced right edge of window */
 
   /* Retransmission timer. */
-  s16_t rtime;
+  s16_t rtime;  //重传定时
 
-  u16_t mss;   /* maximum segment size */
+  u16_t mss;   /* maximum segment size */  //最大数据段大小，默认TCP_MSS 536
 
   /* RTT (round trip time) estimation variables */
   u32_t rttest; /* RTT estimate in 500ms ticks */
   u32_t rtseq;  /* sequence number being timed */
   s16_t sa, sv; /* @todo document this */
 
-  s16_t rto;    /* retransmission time-out */
-  u8_t nrtx;    /* number of retransmissions */
+  s16_t rto;    /* retransmission time-out */  //超时重发时间
+  u8_t nrtx;    /* number of retransmissions *///重发的次数
 
   /* fast retransmit/recovery */
-  u8_t dupacks;
-  u32_t lastack; /* Highest acknowledged seqno. */
+  u8_t dupacks;  //这个指示最大确认序号的ACK被重发的次数
+  u32_t lastack; /* Highest acknowledged seqno. */ //最大的确认序号
 
   /* congestion avoidance/control variables */
-  u16_t cwnd;
-  u16_t ssthresh;
+  u16_t cwnd;  //阻塞窗口，初始值取1
+  u16_t ssthresh;//慢启动阈值
 
   /* sender variables */
-  u32_t snd_nxt;   /* next new seqno to be sent */
+  u32_t snd_nxt;   /* next new seqno to be sent */ //下一个要发送的字节序号
   u32_t snd_wl1, snd_wl2; /* Sequence and acknowledgement numbers of last
-                             window update. */
+                             window update. */  //上传窗口更新时的数据序号和ack序号
   u32_t snd_lbb;       /* Sequence number of next byte to be buffered. */
-  u16_t snd_wnd;   /* sender window */
+  u16_t snd_wnd;   /* sender window */  //发送窗口
   u16_t snd_wnd_max; /* the maximum sender window announced by the remote host */
 
-  u16_t acked;
+  u16_t acked;  //发送并且已经被确认的最大序号
 
   u16_t snd_buf;   /* Available buffer space for sending (in bytes). */
 #define TCP_SNDQUEUELEN_OVERFLOW (0xffffU-3)

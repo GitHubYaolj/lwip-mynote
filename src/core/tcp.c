@@ -516,7 +516,7 @@ tcp_accept_null(void *arg, struct tcp_pcb *pcb, err_t err)
  *             tpcb = tcp_listen(tpcb);
  */
 struct tcp_pcb *
-tcp_listen_with_backlog(struct tcp_pcb *pcb, u8_t backlog)
+tcp_listen_with_backlog(struct tcp_pcb *pcb, u8_t backlog)//新创建一个tcp_pcb_listen，注销掉tcp_pcb，节省空间
 {
   struct tcp_pcb_listen *lpcb;
 
@@ -556,7 +556,7 @@ tcp_listen_with_backlog(struct tcp_pcb *pcb, u8_t backlog)
   lpcb->tos = pcb->tos;
   ip_addr_copy(lpcb->local_ip, pcb->local_ip);
   if (pcb->local_port != 0) {
-    TCP_RMV(&tcp_bound_pcbs, pcb);
+    TCP_RMV(&tcp_bound_pcbs, pcb);//从tcp_bound_pcbs链表中删除这个pcb
   }
   memp_free(MEMP_TCP_PCB, pcb);
 #if LWIP_CALLBACK_API
@@ -1284,7 +1284,7 @@ tcp_alloc(u8_t prio)
   if (pcb == NULL) {
     /* Try killing oldest connection in TIME-WAIT. */
     LWIP_DEBUGF(TCP_DEBUG, ("tcp_alloc: killing off oldest TIME-WAIT connection\n"));
-    tcp_kill_timewait();
+    tcp_kill_timewait();//从timevait状态的pcb里取oldest的那一个
     /* Try to allocate a tcp_pcb again. */
     pcb = (struct tcp_pcb *)memp_malloc(MEMP_TCP_PCB);
     if (pcb == NULL) {
@@ -1320,7 +1320,7 @@ tcp_alloc(u8_t prio)
     pcb->sv = 3000 / TCP_SLOW_INTERVAL;
     pcb->rtime = -1;
     pcb->cwnd = 1;
-    iss = tcp_next_iss();
+    iss = tcp_next_iss();//根据tcp_ticks生产一个初始序列号
     pcb->snd_wl2 = iss;
     pcb->snd_nxt = iss;
     pcb->lastack = iss;
@@ -1362,7 +1362,7 @@ tcp_alloc(u8_t prio)
 struct tcp_pcb *
 tcp_new(void)
 {
-  return tcp_alloc(TCP_PRIO_NORMAL);
+  return tcp_alloc(TCP_PRIO_NORMAL);//初始PCB优先级64
 }
 
 /**
