@@ -1537,9 +1537,9 @@ tcp_pcb_purge(struct tcp_pcb *pcb)
 void
 tcp_pcb_remove(struct tcp_pcb **pcblist, struct tcp_pcb *pcb)
 {
-  TCP_RMV(pcblist, pcb);
+  TCP_RMV(pcblist, pcb);//将这个pcb从active pcb链表删除
 
-  tcp_pcb_purge(pcb);
+  tcp_pcb_purge(pcb);//将这个pcb空间释放，并释放掉与它相关的unsent/unacked/ooseq/refused_data等结构
   
   /* if there is an outstanding delayed ACKs, send it */
   if (pcb->state != TIME_WAIT &&

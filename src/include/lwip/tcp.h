@@ -273,9 +273,9 @@ struct tcp_pcb {
 #endif /* LWIP_TCP_KEEPALIVE */
   
   /* Persist timer counter */
-  u8_t persist_cnt;
+  u8_t persist_cnt;//坚持定时器计数
   /* Persist timer back-off */
-  u8_t persist_backoff;
+  u8_t persist_backoff;//发出去了几个探查包
 
   /* KEEPALIVE counter */
   u8_t keep_cnt_sent;
