@@ -216,7 +216,7 @@ struct tcp_pcb {
   u32_t lastack; /* Highest acknowledged seqno. */ //最大的确认序号
 
   /* congestion avoidance/control variables */
-  u16_t cwnd;  //阻塞窗口，初始值取1
+  u16_t cwnd;  //阻塞窗口，初始值取1*mss
   u16_t ssthresh;//慢启动阈值
 
   /* sender variables */
@@ -227,7 +227,7 @@ struct tcp_pcb {
   u16_t snd_wnd;   /* sender window */  //发送窗口
   u16_t snd_wnd_max; /* the maximum sender window announced by the remote host */
 
-  u16_t acked;  //发送并且已经被确认的最大序号
+  u16_t acked;  //这次接收到的报文，确认收到的字节个数
 
   u16_t snd_buf;   /* Available buffer space for sending (in bytes). */
 #define TCP_SNDQUEUELEN_OVERFLOW (0xffffU-3)

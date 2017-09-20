@@ -485,7 +485,7 @@ tcp_listen_input(struct tcp_pcb_listen *pcb)
     npcb->rcv_ann_right_edge = npcb->rcv_nxt;
     npcb->snd_wnd = tcphdr->wnd;//设置发送窗口大小,设置为收到的SYN数据报指示的窗口大小(还能接收的字节数)
     npcb->snd_wnd_max = tcphdr->wnd;//同上
-    npcb->ssthresh = npcb->snd_wnd;//同上
+    npcb->ssthresh = npcb->snd_wnd;//同上,设置为接收到的connect报文里面TCP头通告的接收窗口大小
     npcb->snd_wl1 = seqno - 1;/* initialise to seqno-1 to force window update */
     npcb->callback_arg = pcb->callback_arg;
 #if LWIP_CALLBACK_API
@@ -986,12 +986,12 @@ tcp_receive(struct tcp_pcb *pcb)
       if (pcb->state >= ESTABLISHED) {
         if (pcb->cwnd < pcb->ssthresh) {
           if ((u16_t)(pcb->cwnd + pcb->mss) > pcb->cwnd) {
-            pcb->cwnd += pcb->mss;
+            pcb->cwnd += pcb->mss;//慢启动,每收到一个ack,cwnd增加一个mss
           }
           LWIP_DEBUGF(TCP_CWND_DEBUG, ("tcp_receive: slow start cwnd %"U16_F"\n", pcb->cwnd));
         } 
         else {
-          u16_t new_cwnd = (pcb->cwnd + pcb->mss * pcb->mss / pcb->cwnd);
+          u16_t new_cwnd = (pcb->cwnd + pcb->mss * pcb->mss / pcb->cwnd);//拥塞避免,每收到一个ack，cwnd增加mss/cwnd个mss(在一个RTT内cwnd只能增加一个mss)
           if (new_cwnd > pcb->cwnd) {
             pcb->cwnd = new_cwnd;
           }

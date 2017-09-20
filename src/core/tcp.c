@@ -862,7 +862,7 @@ tcp_slowtmr_start:
 
           /* Reduce congestion window and ssthresh. */
           eff_wnd = LWIP_MIN(pcb->cwnd, pcb->snd_wnd);
-          pcb->ssthresh = eff_wnd >> 1;
+          pcb->ssthresh = eff_wnd >> 1;//出现超时重传时，设置慢启动门限为当前min(cwnd, snd_wnd)的一半
           if (pcb->ssthresh < (pcb->mss << 1)) {
             pcb->ssthresh = (pcb->mss << 1);
           }

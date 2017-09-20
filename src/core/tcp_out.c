@@ -1319,7 +1319,7 @@ tcp_rexmit(struct tcp_pcb *pcb)
  */
 void 
 tcp_rexmit_fast(struct tcp_pcb *pcb)
-{
+{//接收到3个重复的ack，进行快速重传
   if (pcb->unacked != NULL && !(pcb->flags & TF_INFR)) {
     /* This is fast retransmit. Retransmit the first unacked segment. */
     LWIP_DEBUGF(TCP_FR_DEBUG, 
