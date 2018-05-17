@@ -175,13 +175,13 @@ struct tcp_pcb {
   u16_t remote_port;
   
   u8_t flags;
-#define TF_ACK_DELAY   ((u8_t)0x01U)   /* Delayed ACK. */
-#define TF_ACK_NOW     ((u8_t)0x02U)   /* Immediate ACK. */
-#define TF_INFR        ((u8_t)0x04U)   /* In fast recovery. */
-#define TF_TIMESTAMP   ((u8_t)0x08U)   /* Timestamp option enabled */
+#define TF_ACK_DELAY   ((u8_t)0x01U)   /* Delayed ACK. 延迟确认*/
+#define TF_ACK_NOW     ((u8_t)0x02U)   /* Immediate ACK. 立即确认*/
+#define TF_INFR        ((u8_t)0x04U)   /* In fast recovery. 快速恢复过程中*/
+#define TF_TIMESTAMP   ((u8_t)0x08U)   /* Timestamp option enabled 时间戳选项开启*/
 #define TF_RXCLOSED    ((u8_t)0x10U)   /* rx closed by tcp_shutdown */
 #define TF_FIN         ((u8_t)0x20U)   /* Connection was closed locally (FIN segment enqueued). */
-#define TF_NODELAY     ((u8_t)0x40U)   /* Disable Nagle algorithm */
+#define TF_NODELAY     ((u8_t)0x40U)   /* Disable Nagle algorithm 关闭nagel算法*/
 #define TF_NAGLEMEMERR ((u8_t)0x80U)   /* nagle enabled, memerr, try to output to prevent delayed ACK to happen */
 
   /* the rest of the fields are in host byte order
@@ -190,18 +190,18 @@ struct tcp_pcb {
   /* Timers */
   u8_t polltmr, pollinterval;
   u8_t last_timer;
-  u32_t tmr;  //记录PCB创建时的时刻
+  u32_t tmr;  //该连接上次有数据包到达的时间
 
-  /* receiver variables */
-  u32_t rcv_nxt;   /* next seqno expected */  //ACK的序号
-  u16_t rcv_wnd;   /* receiver window available */  //接收窗口
-  u16_t rcv_ann_wnd; /* receiver window to announce */  //通告窗口
-  u32_t rcv_ann_right_edge; /* announced right edge of window */
+  /* receiver variables 接收窗口相关变量*/
+  u32_t rcv_nxt;   /* next seqno expected 接收端希望下一个到达的序号*/  //ACK的序号
+  u16_t rcv_wnd;   /* receiver window available当前接收窗口的可用部分，当数据到达时变小，当上层应用程序把数据取走之后变大 */  //接收窗口
+  u16_t rcv_ann_wnd; /* receiver window to announce 向数据发送方声明的接收窗口大小*/  //通告窗口
+  u32_t rcv_ann_right_edge; /* announced right edge of window 向发送方声明接收窗口时，计算得到的接收窗口的最右端*/
 
   /* Retransmission timer. */
   s16_t rtime;  //重传定时
 
-  u16_t mss;   /* maximum segment size */  //最大数据段大小，默认TCP_MSS 536
+  u16_t mss;   /* maximum segment size */  //最大数据段大小，默认TCP_MSS 536,lwip中实际发送的数据包，都是以mss大小进行切分的
 
   /* RTT (round trip time) estimation variables */
   u32_t rttest; /* RTT estimate in 500ms ticks */
@@ -219,7 +219,7 @@ struct tcp_pcb {
   u16_t cwnd;  //阻塞窗口，初始值取1*mss
   u16_t ssthresh;//慢启动阈值
 
-  /* sender variables */
+  /* sender variables 发送窗口相关变量*/
   u32_t snd_nxt;   /* next new seqno to be sent */ //下一个要发送的字节序号
   u32_t snd_wl1, snd_wl2; /* Sequence and acknowledgement numbers of last
                              window update. */  //上传窗口更新时的数据序号和ack序号
@@ -229,7 +229,7 @@ struct tcp_pcb {
 
   u16_t acked;  //这次接收到的报文，确认收到的字节个数
 
-  u16_t snd_buf;   /* Available buffer space for sending (in bytes). */
+  u16_t snd_buf;   /* Available buffer space for sending (in bytes).按照发送窗口计算得到的可以发送的数据量 */
 #define TCP_SNDQUEUELEN_OVERFLOW (0xffffU-3)
   u16_t snd_queuelen; /* Available buffer space for sending (in tcp_segs). */
 
