@@ -581,7 +581,7 @@ u32_t tcp_update_rcv_ann_wnd(struct tcp_pcb *pcb)
   u32_t new_right_edge = pcb->rcv_nxt + pcb->rcv_wnd;
 
   if (TCP_SEQ_GEQ(new_right_edge, pcb->rcv_ann_right_edge + LWIP_MIN((TCP_WND / 2), pcb->mss))) {
-    /* we can advertise more window */
+    /* we can advertise more window */ //防止通告小窗口，直到有足够的接收缓存，再通告较大的窗口 
     pcb->rcv_ann_wnd = pcb->rcv_wnd;
     return new_right_edge - pcb->rcv_ann_right_edge;
   } else {

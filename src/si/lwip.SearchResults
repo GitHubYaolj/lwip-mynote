@@ -1,4 +1,63 @@
----- LWIP_PLATFORM_ASSERT Matches (3 in 2 files) ----
-Debug.h (src\include\lwip):  LWIP_PLATFORM_ASSERT(message); } while(0)
-Debug.h (src\include\lwip):  LWIP_PLATFORM_ASSERT(message); handler;}} while(0)
-Sys_arch.txt (doc):    LWIP_PLATFORM_ASSERT(x)  - fatal, print message and abandon execution.
+---- tcp_write Matches (62 in 7 files) ----
+Api_msg.c (src\api):    err = tcp_write(conn->pcb.tcp, dataptr, len, apiflags);
+Api_msg.c (src\api):      /* tcp_write returned ERR_MEM, try tcp_output anyway */
+Opt.h (src\include\lwip): * TCP_OVERSIZE: The maximum number of bytes that tcp_write may
+Opt.h (src\include\lwip): * 0:         Disable oversized allocation. Each tcp_write() allocates a new
+Rawapi.txt (doc):tcp_write(). When the data is successfully transmitted to the remote
+Rawapi.txt (doc):- err_t tcp_write(struct tcp_pcb *pcb, const void *dataptr, u16_t len,
+Rawapi.txt (doc):    the PSH flag is set in the last segment created by this call to tcp_write.
+Rawapi.txt (doc):  The tcp_write() function will fail and return ERR_MEM if the length
+Rawapi.txt (doc):if a call to tcp_write() has failed because memory wasn't available,
+Rawapi.txt (doc):the application may use the polling functionality to call tcp_write()
+Rawapi.txt (doc):Also, data passed to tcp_write without the copy-flag must not be changed!
+Tcp.c (src\core):     * We correct for TCP options in tcp_write(), and don't support IP options.
+Tcp.h (src\include\lwip):/* Flags for "apiflags" parameter in tcp_write */
+Tcp.h (src\include\lwip):err_t            tcp_write   (struct tcp_pcb *pcb, const void *dataptr, u16_t len,
+Tcp_out.c (src\core): * Called by tcp_write and tcp_enqueue_flags.
+Tcp_out.c (src\core): * @param apiflags API flags given to tcp_write.
+Tcp_out.c (src\core):     * length required? If tcp_write is going to be called again
+Tcp_out.c (src\core):/** Checks if tcp_write is allowed or not (checks state, snd_buf and snd_queuelen).
+Tcp_out.c (src\core): * @return ERR_OK if tcp_write is allowed to proceed, another err_t otherwise
+Tcp_out.c (src\core):    LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_STATE | LWIP_DBG_LEVEL_SEVERE, ("tcp_write() called in invalid state\n"));
+Tcp_out.c (src\core):    LWIP_DEBUGF(TCP_OUTPUT_DEBUG | 3, ("tcp_write: too much data (len=%"U16_F" > snd_buf=%"U16_F")\n",
+Tcp_out.c (src\core):  LWIP_DEBUGF(TCP_QLEN_DEBUG, ("tcp_write: queuelen: %"U16_F"\n", (u16_t)pcb->snd_queuelen));
+Tcp_out.c (src\core):    LWIP_DEBUGF(TCP_OUTPUT_DEBUG | 3, ("tcp_write: too long queue %"U16_F" (max %"U16_F")\n",
+Tcp_out.c (src\core):    LWIP_ASSERT("tcp_write: pbufs on queue => at least one queue non-empty",
+Tcp_out.c (src\core):    LWIP_ASSERT("tcp_write: no pbufs on queue => both queues empty",
+Tcp_out.c (src\core): * calling tcp_write().
+Tcp_out.c (src\core):tcp_write(struct tcp_pcb *pcb, const void *arg, u16_t len, u8_t apiflags)
+Tcp_out.c (src\core):  LWIP_DEBUGF(TCP_OUTPUT_DEBUG, ("tcp_write(pcb=%p, data=%p, len=%"U16_F", apiflags=%"U16_F")\n",
+Tcp_out.c (src\core):  LWIP_ERROR("tcp_write: arg == NULL (programmer violates API)", 
+Tcp_out.c (src\core):                      ("tcp_write : could not allocate memory for pbuf copy size %"U16_F"\n",
+Tcp_out.c (src\core):                      ("tcp_write: could not allocate memory for zero-copy pbuf\n"));
+Tcp_out.c (src\core):        LWIP_DEBUGF(TCP_OUTPUT_DEBUG | 2, ("tcp_write : could not allocate memory for pbuf copy size %"U16_F"\n", seglen));
+Tcp_out.c (src\core):      LWIP_ASSERT("tcp_write: check that first pbuf can hold the complete seglen",
+Tcp_out.c (src\core):        LWIP_DEBUGF(TCP_OUTPUT_DEBUG | 2, ("tcp_write: could not allocate memory for zero-copy pbuf\n"));
+Tcp_out.c (src\core):        LWIP_DEBUGF(TCP_OUTPUT_DEBUG | 2, ("tcp_write: could not allocate memory for header pbuf\n"));
+Tcp_out.c (src\core):      LWIP_DEBUGF(TCP_OUTPUT_DEBUG | 2, ("tcp_write: queue too long %"U16_F" (%"U16_F")\n", queuelen, TCP_SND_QUEUELEN));
+Tcp_out.c (src\core):    LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_TRACE, ("tcp_write: queueing %"U32_F":%"U32_F"\n",
+Tcp_out.c (src\core):    LWIP_ASSERT("tcp_write: cannot concatenate when pcb->unsent is empty",
+Tcp_out.c (src\core):  LWIP_DEBUGF(TCP_QLEN_DEBUG, ("tcp_write: %"S16_F" (after enqueued)\n",
+Tcp_out.c (src\core):    LWIP_ASSERT("tcp_write: valid queue length",
+Tcp_out.c (src\core):    LWIP_ASSERT("tcp_write: valid queue length", pcb->unacked != NULL ||
+Tcp_out.c (src\core):  LWIP_DEBUGF(TCP_QLEN_DEBUG | LWIP_DBG_STATE, ("tcp_write: %"S16_F" (with mem err)\n", pcb->snd_queuelen));
+Tcp_out.c (src\core):     * - if tcp_write had a memory error before (prevent delayed ACK timeout) or
+Tcp_out.c (src\core):     *   RST is no sent using tcp_write/tcp_output.
+Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data1, sizeof(data1), TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data2, sizeof(data2), TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data3, sizeof(data3), TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data4, sizeof(data4), TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data5, sizeof(data5), TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):      err = tcp_write(pcb, data6, TCP_MSS, TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data5, sizeof(data5), TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data5, sizeof(data5), TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data5, sizeof(data5), TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data5, sizeof(data5), TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data5, sizeof(data5), TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data5, sizeof(data5), TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):    err = tcp_write(pcb, &tx_data[sent_total], TCP_MSS, TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):    err = tcp_write(pcb, &tx_data[sent_total], TCP_MSS, TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):    err = tcp_write(pcb, &tx_data[sent_total], initial_data_len, TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):    err = tcp_write(pcb, &tx_data[sent_total], TCP_MSS, TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, &tx_data[sent_total], TCP_MSS, TCP_WRITE_FLAG_COPY);
+Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, &tx_data[sent_total], 1, TCP_WRITE_FLAG_COPY);
