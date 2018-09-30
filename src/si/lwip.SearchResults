@@ -1,63 +1,83 @@
----- tcp_write Matches (62 in 7 files) ----
-Api_msg.c (src\api):    err = tcp_write(conn->pcb.tcp, dataptr, len, apiflags);
-Api_msg.c (src\api):      /* tcp_write returned ERR_MEM, try tcp_output anyway */
-Opt.h (src\include\lwip): * TCP_OVERSIZE: The maximum number of bytes that tcp_write may
-Opt.h (src\include\lwip): * 0:         Disable oversized allocation. Each tcp_write() allocates a new
-Rawapi.txt (doc):tcp_write(). When the data is successfully transmitted to the remote
-Rawapi.txt (doc):- err_t tcp_write(struct tcp_pcb *pcb, const void *dataptr, u16_t len,
-Rawapi.txt (doc):    the PSH flag is set in the last segment created by this call to tcp_write.
-Rawapi.txt (doc):  The tcp_write() function will fail and return ERR_MEM if the length
-Rawapi.txt (doc):if a call to tcp_write() has failed because memory wasn't available,
-Rawapi.txt (doc):the application may use the polling functionality to call tcp_write()
-Rawapi.txt (doc):Also, data passed to tcp_write without the copy-flag must not be changed!
-Tcp.c (src\core):     * We correct for TCP options in tcp_write(), and don't support IP options.
-Tcp.h (src\include\lwip):/* Flags for "apiflags" parameter in tcp_write */
-Tcp.h (src\include\lwip):err_t            tcp_write   (struct tcp_pcb *pcb, const void *dataptr, u16_t len,
-Tcp_out.c (src\core): * Called by tcp_write and tcp_enqueue_flags.
-Tcp_out.c (src\core): * @param apiflags API flags given to tcp_write.
-Tcp_out.c (src\core):     * length required? If tcp_write is going to be called again
-Tcp_out.c (src\core):/** Checks if tcp_write is allowed or not (checks state, snd_buf and snd_queuelen).
-Tcp_out.c (src\core): * @return ERR_OK if tcp_write is allowed to proceed, another err_t otherwise
-Tcp_out.c (src\core):    LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_STATE | LWIP_DBG_LEVEL_SEVERE, ("tcp_write() called in invalid state\n"));
-Tcp_out.c (src\core):    LWIP_DEBUGF(TCP_OUTPUT_DEBUG | 3, ("tcp_write: too much data (len=%"U16_F" > snd_buf=%"U16_F")\n",
-Tcp_out.c (src\core):  LWIP_DEBUGF(TCP_QLEN_DEBUG, ("tcp_write: queuelen: %"U16_F"\n", (u16_t)pcb->snd_queuelen));
-Tcp_out.c (src\core):    LWIP_DEBUGF(TCP_OUTPUT_DEBUG | 3, ("tcp_write: too long queue %"U16_F" (max %"U16_F")\n",
-Tcp_out.c (src\core):    LWIP_ASSERT("tcp_write: pbufs on queue => at least one queue non-empty",
-Tcp_out.c (src\core):    LWIP_ASSERT("tcp_write: no pbufs on queue => both queues empty",
-Tcp_out.c (src\core): * calling tcp_write().
-Tcp_out.c (src\core):tcp_write(struct tcp_pcb *pcb, const void *arg, u16_t len, u8_t apiflags)
-Tcp_out.c (src\core):  LWIP_DEBUGF(TCP_OUTPUT_DEBUG, ("tcp_write(pcb=%p, data=%p, len=%"U16_F", apiflags=%"U16_F")\n",
-Tcp_out.c (src\core):  LWIP_ERROR("tcp_write: arg == NULL (programmer violates API)", 
-Tcp_out.c (src\core):                      ("tcp_write : could not allocate memory for pbuf copy size %"U16_F"\n",
-Tcp_out.c (src\core):                      ("tcp_write: could not allocate memory for zero-copy pbuf\n"));
-Tcp_out.c (src\core):        LWIP_DEBUGF(TCP_OUTPUT_DEBUG | 2, ("tcp_write : could not allocate memory for pbuf copy size %"U16_F"\n", seglen));
-Tcp_out.c (src\core):      LWIP_ASSERT("tcp_write: check that first pbuf can hold the complete seglen",
-Tcp_out.c (src\core):        LWIP_DEBUGF(TCP_OUTPUT_DEBUG | 2, ("tcp_write: could not allocate memory for zero-copy pbuf\n"));
-Tcp_out.c (src\core):        LWIP_DEBUGF(TCP_OUTPUT_DEBUG | 2, ("tcp_write: could not allocate memory for header pbuf\n"));
-Tcp_out.c (src\core):      LWIP_DEBUGF(TCP_OUTPUT_DEBUG | 2, ("tcp_write: queue too long %"U16_F" (%"U16_F")\n", queuelen, TCP_SND_QUEUELEN));
-Tcp_out.c (src\core):    LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_TRACE, ("tcp_write: queueing %"U32_F":%"U32_F"\n",
-Tcp_out.c (src\core):    LWIP_ASSERT("tcp_write: cannot concatenate when pcb->unsent is empty",
-Tcp_out.c (src\core):  LWIP_DEBUGF(TCP_QLEN_DEBUG, ("tcp_write: %"S16_F" (after enqueued)\n",
-Tcp_out.c (src\core):    LWIP_ASSERT("tcp_write: valid queue length",
-Tcp_out.c (src\core):    LWIP_ASSERT("tcp_write: valid queue length", pcb->unacked != NULL ||
-Tcp_out.c (src\core):  LWIP_DEBUGF(TCP_QLEN_DEBUG | LWIP_DBG_STATE, ("tcp_write: %"S16_F" (with mem err)\n", pcb->snd_queuelen));
-Tcp_out.c (src\core):     * - if tcp_write had a memory error before (prevent delayed ACK timeout) or
-Tcp_out.c (src\core):     *   RST is no sent using tcp_write/tcp_output.
-Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data1, sizeof(data1), TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data2, sizeof(data2), TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data3, sizeof(data3), TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data4, sizeof(data4), TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data5, sizeof(data5), TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):      err = tcp_write(pcb, data6, TCP_MSS, TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data5, sizeof(data5), TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data5, sizeof(data5), TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data5, sizeof(data5), TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data5, sizeof(data5), TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data5, sizeof(data5), TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, data5, sizeof(data5), TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):    err = tcp_write(pcb, &tx_data[sent_total], TCP_MSS, TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):    err = tcp_write(pcb, &tx_data[sent_total], TCP_MSS, TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):    err = tcp_write(pcb, &tx_data[sent_total], initial_data_len, TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):    err = tcp_write(pcb, &tx_data[sent_total], TCP_MSS, TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, &tx_data[sent_total], TCP_MSS, TCP_WRITE_FLAG_COPY);
-Test_tcp.c (test\unit\tcp):  err = tcp_write(pcb, &tx_data[sent_total], 1, TCP_WRITE_FLAG_COPY);
+---- recv Matches (87 in 33 files) ----
+Api_lib.c (src\api):    /* don't recv on fatal errors: this might block the application task
+Api_lib.c (src\api):    /* don't recv on fatal errors: this might block the application task
+Api_msg.c (src\api): * @see raw.h (struct raw_pcb.recv) for parameters and return value
+Api_msg.c (src\api): * @see udp.h (struct udp_pcb.recv) for parameters
+Api_msg.c (src\api):  LWIP_ASSERT("recv_udp: recv for wrong pcb!", conn->pcb.udp == pcb);
+Api_msg.c (src\api): * @see tcp.h (struct tcp_pcb.recv) for parameters and return value
+Api_msg.c (src\api):  LWIP_ASSERT("recv_tcp: recv for wrong pcb!", conn->pcb.tcp == pcb);
+Api_msg.c (src\api):  /* pass NULL-message to recvmbox to wake up pending recv */
+Api_msg.c (src\api):    /* don't restore recv callback: we don't want to receive any more data */
+Dhcp.c (src\core): * lwIP is single-threaded and the array is only used while in recv
+Dhcp.c (src\core):  /* set up the recv callback and argument */
+Etharp.c (src\netif):  ETHARP_STATS_INC(etharp.recv);
+Ethernetif.c (src\netif):    LINK_STATS_INC(link.recv);
+Icmp.c (src\core\ipv4):  ICMP_STATS_INC(icmp.recv);
+Icmp6.c (src\core\ipv6):  ICMP_STATS_INC(icmp.recv);
+Igmp.c (src\core\ipv4):  IGMP_STATS_INC(igmp.recv);
+Init.c (src\core):  #error "If you want to use broadcast filter per pcb on recv operations, you have to define IP_SOF_BROADCAST=1 in your lwipopts.h"
+Ip.c (src\core\ipv4):  IP_STATS_INC(ip.recv);
+Ip6.c (src\core\ipv6):  IP_STATS_INC(ip.recv);
+Ip_frag.c (src\core\ipv4):  IPFRAG_STATS_INC(ip_frag.recv);
+Msg_in.c (src\core\snmp): * Called for one async event. (recv external/private answer)
+Netif.c (src\core):      LINK_STATS_INC(link.recv);
+Opt.h (src\include\lwip): * on recv operations, you also have to set IP_SOF_BROADCAST_RECV=1.
+Opt.h (src\include\lwip): * filter on recv operations.
+Ppp.c (src\netif\ppp):  LINK_STATS_INC(link.recv);
+Raw.c (src\core):        if (pcb->recv != NULL) {
+Raw.c (src\core):          if (pcb->recv(pcb->recv_arg, pcb, p, ip_current_src_addr()) != 0) {
+Raw.c (src\core):raw_recv(struct raw_pcb *pcb, raw_recv_fn recv, void *recv_arg)
+Raw.c (src\core):  /* remember recv() callback and user data */
+Raw.c (src\core):  pcb->recv = recv;
+Raw.h (src\include\lwip):  raw_recv_fn recv;
+Raw.h (src\include\lwip):  /* user-supplied argument for the recv callback */
+Raw.h (src\include\lwip):void             raw_recv       (struct raw_pcb *pcb, raw_recv_fn recv, void *recv_arg);
+Rawapi.txt (doc):                err_t (* recv)(void *arg, struct tcp_pcb *tpcb,
+Rawapi.txt (doc):                void (* recv)(void *arg, struct udp_pcb *upcb,
+Slipif.c (src\netif):        LINK_STATS_INC(link.recv);
+Snmp_msg.h (src\include\lwip):/** Handle an internal (recv) or external (private response) event. */
+Sockets.c (src\api):    /* Check if there is data left from the last recv operation. */
+Sockets.c (src\api):    /* Check if there is data left from the last recv operation. /maq 041215 */
+Sockets.h (src\include\lwip):/* Flags we can use with send and recv. */
+Sockets.h (src\include\lwip):#define recv(a,b,c,d)         lwip_recv(a,b,c,d)
+Stats.c (src\core):  LWIP_PLATFORM_DIAG(("recv: %"STAT_COUNTER_F"\n\t", proto->recv)); 
+Stats.c (src\core):  LWIP_PLATFORM_DIAG(("recv: %"STAT_COUNTER_F"\n\t", igmp->recv)); 
+Stats.h (src\include\lwip):  STAT_COUNTER recv;             /* Received packets. */
+Stats.h (src\include\lwip):  STAT_COUNTER recv;             /* Received packets. */
+Tcp.c (src\core): * (tcp_recved() not called for all data passed to recv callback).
+Tcp.c (src\core):/** Pass pcb->refused_data to the recv callback */
+Tcp.c (src\core): * a recv callback for the pcb.
+Tcp.c (src\core):    pcb->recv = tcp_recv_null;
+Tcp.c (src\core): * @param pcb tcp_pcb to set the recv callback
+Tcp.c (src\core): * @param recv callback function to call for this pcb when data is received
+Tcp.c (src\core):tcp_recv(struct tcp_pcb *pcb, tcp_recv_fn recv)
+Tcp.c (src\core):  LWIP_ASSERT("invalid socket state for recv callback", pcb->state != LISTEN);
+Tcp.c (src\core):  pcb->recv = recv;
+Tcp.h (src\include\lwip):  tcp_recv_fn recv;
+Tcp.h (src\include\lwip):void             tcp_recv    (struct tcp_pcb *pcb, tcp_recv_fn recv);
+Tcp_impl.h (src\include\lwip):    if((pcb)->recv != NULL) {                                  \
+Tcp_impl.h (src\include\lwip):      (ret) = (pcb)->recv((pcb)->callback_arg,(pcb),(p),(err));\
+Tcp_impl.h (src\include\lwip):    if(((pcb)->recv != NULL)) {                                  \
+Tcp_impl.h (src\include\lwip):      (ret) = (pcb)->recv((pcb)->callback_arg,(pcb),NULL,ERR_OK);\
+Tcp_in.c (src\core):  TCP_STATS_INC(tcp.recv);
+Test_tcp.c (test\unit\tcp): /* "recv" ACK for data1 */
+Test_tcp_oos.c (test\unit\tcp):  /* don't 'recv' the first segment (1 byte) so that all other segments will be ooseq */
+Test_tcp_oos.c (test\unit\tcp):  /* create segments and 'recv' them */
+Test_tcp_oos.c (test\unit\tcp):  /* don't 'recv' the first segment (1 byte) so that all other segments will be ooseq */
+Test_tcp_oos.c (test\unit\tcp):  /* create segments and 'recv' them */
+Udp.c (src\core): * recv function. If no pcb is found or the datagram is incorrect, the
+Udp.c (src\core):  UDP_STATS_INC(udp.recv);
+Udp.c (src\core):              if (mpcb->recv != NULL) {
+Udp.c (src\core):                    mpcb->recv(mpcb->recv_arg, mpcb, q, ip_current_src_addr(), src);
+Udp.c (src\core):      if (pcb->recv != NULL) {
+Udp.c (src\core):        /* now the recv function is responsible for freeing p */
+Udp.c (src\core):        pcb->recv(pcb->recv_arg, pcb, p, ip_current_src_addr(), src);
+Udp.c (src\core):        /* no recv function registered? then we have to free the pbuf! */
+Udp.c (src\core): * @param pcb the pcb for wich to set the recv callback
+Udp.c (src\core): * @param recv function pointer of the callback function
+Udp.c (src\core):udp_recv(struct udp_pcb *pcb, udp_recv_fn recv, void *recv_arg)
+Udp.c (src\core):  /* remember recv() callback and user data */
+Udp.c (src\core):  pcb->recv = recv;
+Udp.h (src\include\lwip):  udp_recv_fn recv;
+Udp.h (src\include\lwip):  /** user-supplied argument for the recv callback */
+Udp.h (src\include\lwip):void             udp_recv       (struct udp_pcb *pcb, udp_recv_fn recv,

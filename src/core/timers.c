@@ -378,7 +378,7 @@ sys_check_timeouts(void)
       if (tmptimeout && (tmptimeout->time <= diff)) {
         /* timeout has expired */
         had_one = 1;
-        timeouts_last_time = now;
+        timeouts_last_time = now;//这个地方有bug，应该是 timeouts_last_time += tmptimeout->time;
         diff -= tmptimeout->time;
         next_timeout = tmptimeout->next;
         handler = tmptimeout->h;

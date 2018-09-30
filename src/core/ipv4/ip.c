@@ -555,7 +555,7 @@ ip_input(struct pbuf *p, struct netif *inp)
 
 #if LWIP_RAW
   /* raw input did not eat the packet? */
-  if (raw_input(p, inp) == 0)//如果是分片包且不是最后一片，返回1；否则返回0
+  if (raw_input(p, inp) == 0)//没有rawpcb接收，返回0
 #endif /* LWIP_RAW */
   {
     switch (IPH_PROTO(iphdr)) {
